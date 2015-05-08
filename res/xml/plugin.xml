@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<uexplugins>
+
+    <!-- plugin test -->
+    <plugin
+        className="com.zywx.uexindexbar.uexIndexBar"
+        uexName="uexIndexBar" > 
+        <method name="open" />
+        <method name="close" />
+    </plugin>
+
+</uexplugins>
