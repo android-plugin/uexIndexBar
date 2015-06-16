@@ -14,12 +14,11 @@ import android.view.View;
 public class MyLetterListView extends View {
 
 	private OnTouchingLetterChangedListener onTouchingLetterChangedListener;
-	private static final String[] b = { "A", "B", "C", "D", "E", "F", "G", "H",
-			"I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U",
-			"V", "W", "X", "Y", "Z" };
+	private String[] letters =null;
 	private int choose = -1;
 	private Paint paint = new Paint();
 	private boolean showBkg = false;
+    private int letterColor=0;
 
 	public MyLetterListView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
@@ -29,13 +28,18 @@ public class MyLetterListView extends View {
 		super(context, attrs);
 	}
 
-	public MyLetterListView(Context context) {
+	public MyLetterListView(Context context,String[] letters,int letterColor) {
 		super(context);
+        this.letters=letters;
+        this.letterColor=letterColor;
 	}
 
 	@Override
 	protected void onDraw(Canvas canvas) {
 		super.onDraw(canvas);
+        if (letters==null){
+            return;
+        }
 		if (showBkg) {
 			this.setBackgroundResource(EUExUtil
 					.getResDrawableID("plug_in_index_bar_bg"));
@@ -45,15 +49,14 @@ public class MyLetterListView extends View {
 
 		int height = getHeight();
 		int width = getWidth();
-		int singleHeight = height / b.length;
-		for (int i = 0; i < b.length; i++) {
-			paint.setColor(Color.BLACK);
-			paint.setTypeface(Typeface.DEFAULT_BOLD);
+		int singleHeight = height / letters.length;
+		for (int i = 0; i < letters.length; i++) {
+			paint.setColor(letterColor);
 			paint.setAntiAlias(true);
 			paint.setTextSize(Utils.sp2px(14, uexIndexBar.density));
-			float xPos = width / 2 - paint.measureText(b[i]) / 2;
+			float xPos = width / 2 - paint.measureText(letters[i]) / 2;
 			float yPos = singleHeight * i + singleHeight;
-			canvas.drawText(b[i], xPos, yPos, paint);
+			canvas.drawText(letters[i], xPos, yPos, paint);
 			paint.reset();
 		}
 
@@ -65,13 +68,13 @@ public class MyLetterListView extends View {
 		final float y = event.getY();
 		final int oldChoose = choose;
 		final OnTouchingLetterChangedListener listener = onTouchingLetterChangedListener;
-		final int c = (int) (y / getHeight() * b.length);
+		final int c = (int) (y / getHeight() * letters.length);
 		switch (action) {
 		case MotionEvent.ACTION_DOWN:
 			showBkg = true;
 			if (oldChoose != c && listener != null) {
-				if (c >= 0 && c < b.length) {
-					listener.onTouchingLetterChanged(b[c]);
+				if (c >= 0 && c < letters.length) {
+					listener.onTouchingLetterChanged(letters[c]);
 					choose = c;
 					invalidate();
 				}
@@ -80,8 +83,8 @@ public class MyLetterListView extends View {
 			break;
 		case MotionEvent.ACTION_MOVE:
 			if (oldChoose != c && listener != null) {
-				if (c >= 0 && c < b.length) {
-					listener.onTouchingLetterChanged(b[c]);
+				if (c >= 0 && c < letters.length) {
+					listener.onTouchingLetterChanged(letters[c]);
 					choose = c;
 					invalidate();
 				}
