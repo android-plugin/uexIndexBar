@@ -1,11 +1,15 @@
 package com.zywx.uexindexbar;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.zywx.wbpalmstar.base.BUtility;
 import org.zywx.wbpalmstar.engine.EBrowserView;
 import org.zywx.wbpalmstar.engine.universalex.EUExBase;
 import org.zywx.wbpalmstar.engine.universalex.EUExCallback;
 
 import android.app.Activity;
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
@@ -36,18 +40,33 @@ public class uexIndexBar extends EUExBase {
 				String inY = parm[1];
 				String inW = parm[2];
 				String inH = parm[3];
-
+                String jsonStr=null;
+                if (parm.length>4) {
+                    jsonStr = parm[4];
+                }
 				int x = 0;
 				int y = 0;
 				int w = 0;
 				int h = 0;
-				try {
+                String color=null;
+                String[] indices=null;
+                try {
 					x = Integer.parseInt(inX);
 					y = Integer.parseInt(inY);
 					w = Integer.parseInt(inW);
 					h = Integer.parseInt(inH);
+                    if (!TextUtils.isEmpty(jsonStr)) {
+                        JSONObject jsonObject = new JSONObject(jsonStr);
+                        JSONArray jsonArray=jsonObject.getJSONArray("indices");
+                        if (jsonArray!=null){
+                            indices=new String[jsonArray.length()];
+                            for (int i=0;i<jsonArray.length();i++){
+                                indices[i]= String.valueOf(jsonArray.get(i));
+                            }
+                        }
+                        color=jsonObject.optString("textColor","#000000");
+                    }
 				} catch (Exception e) {
-					e.printStackTrace();
 					return;
 				}
 				WindowManager windowManager = ((Activity) mContext)
@@ -55,8 +74,7 @@ public class uexIndexBar extends EUExBase {
 				DisplayMetrics displayMetrics = new DisplayMetrics();
 				windowManager.getDefaultDisplay().getMetrics(displayMetrics);
 				density = displayMetrics.density;
-
-				letterListView = new MyLetterListView(mContext);
+				letterListView = new MyLetterListView(mContext,indices,BUtility.parseColor(color));
 				letterListView
 						.setOnTouchingLetterChangedListener(new OnTouchingLetterChangedListener() {
 

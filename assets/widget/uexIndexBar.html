@@ -32,14 +32,15 @@ var cInt = 2;
     }
     
     function indexBarOpen(){
-
-
 		var w = screen.availWidth/2;
         var h = screen.availHeight/2;
-        
+        var ext = {textColor:"#E6942A",indices:["#","A","B","C","D","E","F", "G", "H",
+			"I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U",
+			"V", "W", "X", "Y", "Z"]};
+        var extStr =JSON.stringify(ext);
          var divTop = document.getElementById("topDiv").offsetTop + document.getElementById("topDiv").offsetHeight;
 
-        uexIndexBar.open(screen.availWidth - w ,0,w,h);
+        uexIndexBar.open(screen.availWidth - w ,0,w,h,extStr);
      }
 		</script>
   </head>
