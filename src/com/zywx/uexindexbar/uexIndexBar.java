@@ -22,7 +22,9 @@ public class uexIndexBar extends EUExBase {
 
 	public static float density;
 	private MyLetterListView letterListView;
-
+    private final String[] defaultLetters={ "A", "B", "C", "D", "E", "F", "G", "H",
+            "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U",
+            "V", "W", "X", "Y", "Z" };
 	public uexIndexBar(Context context, EBrowserView view) {
 		super(context, view);
 	}
@@ -48,7 +50,7 @@ public class uexIndexBar extends EUExBase {
 				int y = 0;
 				int w = 0;
 				int h = 0;
-                String color=null;
+                String color="#000000";
                 String[] indices=null;
                 try {
 					x = Integer.parseInt(inX);
@@ -65,6 +67,9 @@ public class uexIndexBar extends EUExBase {
                             }
                         }
                         color=jsonObject.optString("textColor","#000000");
+                    }
+                    if (indices==null){
+                        indices=defaultLetters;
                     }
 				} catch (Exception e) {
 					return;
