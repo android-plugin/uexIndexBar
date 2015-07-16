@@ -1,15 +1,14 @@
 package com.zywx.uexindexbar;
 
-import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+
+import org.zywx.wbpalmstar.engine.universalex.EUExUtil;
 
 public class MyLetterListView extends View {
 
@@ -82,6 +81,7 @@ public class MyLetterListView extends View {
 
 			break;
 		case MotionEvent.ACTION_MOVE:
+			showBkg = false;
 			if (oldChoose != c && listener != null) {
 				if (c >= 0 && c < letters.length) {
 					listener.onTouchingLetterChanged(letters[c]);
@@ -91,6 +91,11 @@ public class MyLetterListView extends View {
 			}
 			break;
 		case MotionEvent.ACTION_UP:
+			showBkg = false;
+			choose = -1;
+			invalidate();
+			break;
+		case MotionEvent.ACTION_CANCEL:
 			showBkg = false;
 			choose = -1;
 			invalidate();
