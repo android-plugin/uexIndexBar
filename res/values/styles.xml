@@ -1,33 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
 
-    <style name="Style_Dialog_Loading" parent="@android:style/Theme.Dialog">
-        <item name="android:windowFrame">@null</item>
-        <!-- 边框 -->
-        <item name="android:windowIsFloating">true</item> 
-        <!-- 是否浮现在activity之上 -->
-        <item name="android:windowIsTranslucent">true</item>
-        <!-- 半透明 -->
-        <item name="android:windowNoTitle">true</item>
-        <!-- 无标题 -->
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <!-- 背景透明 -->
-        <item name="android:backgroundDimEnabled">false</item>
-        <!-- 模糊 -->
-    </style>
-
-    <style name="Anim.Loading_Dialog" parent="android:Animation">
-        <item name="android:windowEnterAnimation">@anim/plugin_dh_city_dialog_enter_anim</item>
-        <item name="android:windowExitAnimation">@anim/plugin_dh_city_dialog_exit_anim</item>
-    </style>
-    <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
     <style name="browser_main_theme" parent="@android:style/Theme.NoTitleBar">
         <item name="android:scrollbarThumbHorizontal">@drawable/engine_scroller_thumb_hor</item>
         <item name="android:scrollbarThumbVertical">@drawable/engine_scroller_thumb_ver</item>
-        <item name="android:windowBackground">@null</item>
+        <item name="android:windowBackground">@color/transparent</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowIsTranslucent">false</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowShowWallpaper">false</item>
+        <item name="android:windowActionBar">false</item>
+    </style>
+
+    <style name="browser_loading_theme" parent="@android:style/Theme.NoTitleBar">
+        <item name="android:scrollbarThumbHorizontal">@drawable/engine_scroller_thumb_hor</item>
+        <item name="android:scrollbarThumbVertical">@drawable/engine_scroller_thumb_ver</item>
+        <item name="android:windowBackground">@color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowShowWallpaper">false</item>
+        <item name="android:windowActionBar">false</item>
     </style>
     <!-- WidgetOne use -->
     <style name="Style_platform_no_title_and_background" parent="android:Theme">

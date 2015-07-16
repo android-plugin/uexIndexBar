@@ -1,5 +1,14 @@
 package com.zywx.uexindexbar;
 
+import android.app.Activity;
+import android.content.Context;
+import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
+import android.widget.AbsoluteLayout;
+
+import com.zywx.uexindexbar.MyLetterListView.OnTouchingLetterChangedListener;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.zywx.wbpalmstar.base.BUtility;
@@ -7,19 +16,10 @@ import org.zywx.wbpalmstar.engine.EBrowserView;
 import org.zywx.wbpalmstar.engine.universalex.EUExBase;
 import org.zywx.wbpalmstar.engine.universalex.EUExCallback;
 
-import android.app.Activity;
-import android.content.Context;
-import android.text.TextUtils;
-import android.util.DisplayMetrics;
-import android.view.WindowManager;
-import android.widget.RelativeLayout;
-
-import com.zywx.uexindexbar.MyLetterListView.OnTouchingLetterChangedListener;
-
 public class uexIndexBar extends EUExBase {
 
 	static final String func_callback = "uexIndexBar.onTouchResult";
-
+    private static final String letterListViewTag = "letterListViewTag";
 	public static float density;
 	private MyLetterListView letterListView;
     private final String[] defaultLetters={ "A", "B", "C", "D", "E", "F", "G", "H",
@@ -33,7 +33,6 @@ public class uexIndexBar extends EUExBase {
 		if (parm.length < 4) {
 			return;
 		}
-
 		((Activity) mContext).runOnUiThread(new Runnable() {
 
 			@Override
@@ -88,12 +87,9 @@ public class uexIndexBar extends EUExBase {
 								myClassCallBack(s);
 							}
 						});
-				RelativeLayout.LayoutParams lparm = new RelativeLayout.LayoutParams(
-						w, h);
-				lparm.leftMargin = x;
-				lparm.topMargin = y;
-				removeViewFromCurrentWindow(letterListView);
-				addViewToCurrentWindow(letterListView, lparm);
+                AbsoluteLayout.LayoutParams layoutParams = new AbsoluteLayout.LayoutParams(w, h, x, y);
+                removeViewFromWebView(letterListViewTag);
+				addViewToWebView(letterListView, layoutParams, letterListViewTag);
 			}
 		});
 
@@ -106,16 +102,26 @@ public class uexIndexBar extends EUExBase {
 	// this case remove a custom view from window
 	public void close(String[] parm) {
 		if (null != letterListView) {
-			removeViewFromCurrentWindow(letterListView);
-		}
-	}
+            ((Activity) mContext).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    removeViewFromWebView(letterListViewTag);
+                }
+            });
+        }
+    }
 
-	@Override
+    @Override
 	protected boolean clean() {
 		if (null != letterListView) {
-			removeViewFromCurrentWindow(letterListView);
-			letterListView = null;
-		}
+            ((Activity) mContext).runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    removeViewFromWebView(letterListViewTag);
+                    letterListView = null;
+                }
+            });
+        }
 		return true;
 	}
 
