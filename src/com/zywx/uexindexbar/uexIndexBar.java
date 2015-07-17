@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 import android.widget.AbsoluteLayout;
+import android.widget.RelativeLayout;
 
 import com.zywx.uexindexbar.MyLetterListView.OnTouchingLetterChangedListener;
 
@@ -25,7 +26,9 @@ public class uexIndexBar extends EUExBase {
     private final String[] defaultLetters={ "A", "B", "C", "D", "E", "F", "G", "H",
             "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U",
             "V", "W", "X", "Y", "Z" };
-	public uexIndexBar(Context context, EBrowserView view) {
+	//用来判断indexBar是否会滚动，如果值为true,会将其嵌入到WebView中, indexBar会跟随网页滚动，如果为false,嵌入到window中,indexBar不会滚动。
+    private boolean isScrollable = false;
+    public uexIndexBar(Context context, EBrowserView view) {
 		super(context, view);
 	}
 
@@ -35,63 +38,78 @@ public class uexIndexBar extends EUExBase {
 		}
 		((Activity) mContext).runOnUiThread(new Runnable() {
 
-			@Override
-			public void run() {
-				String inX = parm[0];
-				String inY = parm[1];
-				String inW = parm[2];
-				String inH = parm[3];
-                String jsonStr=null;
-                if (parm.length>4) {
+            @Override
+            public void run() {
+                if (null != letterListView) {
+                    removeLetterListerView();
+                }
+                String inX = parm[0];
+                String inY = parm[1];
+                String inW = parm[2];
+                String inH = parm[3];
+                String jsonStr = null;
+                if (parm.length > 4) {
                     jsonStr = parm[4];
                 }
-				int x = 0;
-				int y = 0;
-				int w = 0;
-				int h = 0;
-                String color="#000000";
-                String[] indices=null;
+                int x = 0;
+                int y = 0;
+                int w = 0;
+                int h = 0;
+                String color = "#000000";
+                String[] indices = null;
                 try {
-					x = Integer.parseInt(inX);
-					y = Integer.parseInt(inY);
-					w = Integer.parseInt(inW);
-					h = Integer.parseInt(inH);
+                    x = Integer.parseInt(inX);
+                    y = Integer.parseInt(inY);
+                    w = Integer.parseInt(inW);
+                    h = Integer.parseInt(inH);
                     if (!TextUtils.isEmpty(jsonStr)) {
                         JSONObject jsonObject = new JSONObject(jsonStr);
-                        JSONArray jsonArray=jsonObject.getJSONArray("indices");
-                        if (jsonArray!=null){
-                            indices=new String[jsonArray.length()];
-                            for (int i=0;i<jsonArray.length();i++){
-                                indices[i]= String.valueOf(jsonArray.get(i));
+                        if (jsonObject.has("indices")) {
+                            JSONArray jsonArray = jsonObject.getJSONArray("indices");
+                            if (jsonArray != null) {
+                                indices = new String[jsonArray.length()];
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    indices[i] = String.valueOf(jsonArray.get(i));
+                                }
                             }
                         }
-                        color=jsonObject.optString("textColor","#000000");
+                        color = jsonObject.optString("textColor", "#000000");
+                        isScrollable = jsonObject.optBoolean("isScrollable", false);
                     }
-                    if (indices==null){
-                        indices=defaultLetters;
+                    if (indices == null) {
+                        indices = defaultLetters;
                     }
-				} catch (Exception e) {
-					return;
-				}
-				WindowManager windowManager = ((Activity) mContext)
-						.getWindowManager();
-				DisplayMetrics displayMetrics = new DisplayMetrics();
-				windowManager.getDefaultDisplay().getMetrics(displayMetrics);
-				density = displayMetrics.density;
-				letterListView = new MyLetterListView(mContext,indices,BUtility.parseColor(color));
-				letterListView
-						.setOnTouchingLetterChangedListener(new OnTouchingLetterChangedListener() {
+                } catch (Exception e) {
+                    return;
+                }
+                WindowManager windowManager = ((Activity) mContext)
+                        .getWindowManager();
+                DisplayMetrics displayMetrics = new DisplayMetrics();
+                windowManager.getDefaultDisplay().getMetrics(displayMetrics);
+                density = displayMetrics.density;
+                letterListView = new MyLetterListView(mContext, indices, BUtility.parseColor(color));
+                letterListView
+                        .setOnTouchingLetterChangedListener(new OnTouchingLetterChangedListener() {
 
-							@Override
-							public void onTouchingLetterChanged(String s) {
-								myClassCallBack(s);
-							}
-						});
-                AbsoluteLayout.LayoutParams layoutParams = new AbsoluteLayout.LayoutParams(w, h, x, y);
-                removeViewFromWebView(letterListViewTag);
-				addViewToWebView(letterListView, layoutParams, letterListViewTag);
-			}
-		});
+                            @Override
+                            public void onTouchingLetterChanged(String s) {
+                                myClassCallBack(s);
+                            }
+                        });
+                if (isScrollable) {
+                    AbsoluteLayout.LayoutParams layoutParams = new AbsoluteLayout.LayoutParams(w, h, x, y);
+                    addViewToWebView(letterListView, layoutParams, letterListViewTag);
+                } else {
+                    RelativeLayout.LayoutParams lparm = new RelativeLayout.LayoutParams(
+                            w, h);
+                    lparm.leftMargin = x;
+                    lparm.topMargin = y;
+                    addViewToCurrentWindow(letterListView, lparm);
+                }
+
+
+            }
+        });
 
 	}
 
@@ -105,7 +123,7 @@ public class uexIndexBar extends EUExBase {
             ((Activity) mContext).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    removeViewFromWebView(letterListViewTag);
+                    removeLetterListerView();
                 }
             });
         }
@@ -117,12 +135,18 @@ public class uexIndexBar extends EUExBase {
             ((Activity) mContext).runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    removeViewFromWebView(letterListViewTag);
-                    letterListView = null;
+                    removeLetterListerView();
                 }
             });
         }
 		return true;
 	}
-
+    private void removeLetterListerView() {
+        if(isScrollable) {
+            removeViewFromWebView(letterListViewTag);
+        } else {
+            removeViewFromCurrentWindow(letterListView);
+        }
+        letterListView = null;
+    }
 }
