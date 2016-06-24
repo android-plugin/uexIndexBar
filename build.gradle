@@ -1,12 +1,18 @@
 apply plugin: 'com.android.application'
 
-dependencies {
-    compile fileTree(dir: 'libs', include: '*.jar')
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
 }
+dependencies {
+    compile(name: "Engine-system-debug-4.0.0", ext: 'aar')
+}
+
 
 android {
     compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    buildToolsVersion "23.0.2"
     defaultConfig {
         // 应用的包名
         applicationId "org.zywx.wbpalmstar.widgetone.uexindexbar"
@@ -36,3 +42,5 @@ android {
         release.setRoot('build-types/release')
     }
 }
+apply from: "https://raw.githubusercontent.com/android-plugin/gradle-plugin/master/buildPlugin.gradle"
+
