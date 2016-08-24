@@ -20,6 +20,7 @@ import org.zywx.wbpalmstar.engine.universalex.EUExCallback;
 public class uexIndexBar extends EUExBase {
 
 	static final String func_callback = "uexIndexBar.onTouchResult";
+    static final String FUNC_ON_INDEX_CLICK_CALLBACK = "uexIndexBar.onIndexClick";
     private static final String letterListViewTag = "letterListViewTag";
 	public static float density;
 	private MyLetterListView letterListView;
@@ -54,7 +55,7 @@ public class uexIndexBar extends EUExBase {
                 int x = 0;
                 int y = 0;
                 int w = 0;
-                int h = 0;
+                int h = -1;
                 String color = "#000000";
                 String[] indices = null;
                 try {
@@ -115,8 +116,13 @@ public class uexIndexBar extends EUExBase {
 
 	protected void myClassCallBack(String result) {
 		jsCallback(func_callback, 0, EUExCallback.F_C_TEXT, result);
+        callBackPluginJs(FUNC_ON_INDEX_CLICK_CALLBACK, result);
 	}
-
+    private void callBackPluginJs(String methodName, String jsonData) {
+        String js = SCRIPT_HEADER + "if(" + methodName + "){"
+                + methodName + "('" + jsonData + "');}";
+        onCallback(js);
+    }
 	// this case remove a custom view from window
 	public void close(String[] parm) {
 		if (null != letterListView) {
