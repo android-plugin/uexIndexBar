@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <uexplugins>
     <plugin
-        uexName="uexIndexBar" version="4.0.0" build="3">
-        <info>3:4.0插件</info>
-        <build>2:插件嵌入到WebView中</build>
-        <build>1:索引文字支持配置颜色和内容</build>
-        <build>0:索引功能插件</build>
+        uexName="uexIndexBar" version="4.0.0" build="0">
+        <info>0:4.0插件</info>
     </plugin>
 </uexplugins>
